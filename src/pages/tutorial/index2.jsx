@@ -27,27 +27,23 @@ const TutorialPage2 = () => {
 
   // 초기 데이터 설정 및 검색어 필터링
   useEffect(() => {
-    // 지연 필터링을 위한 타이머 설정
     const delayDebounceFn = setTimeout(() => {
       if (univMajorInput) {
-        const filteredResults = allUniversities.filter(item => {
-          // item.name과 univMajorInput이 정의된 경우에만 toLowerCase() 호출
-          return item.name && univMajorInput
-            ? item.name.toLowerCase().includes(univMajorInput.toLowerCase())
-            : false;
-        });
+        const filteredResults = allUniversities.filter(item =>
+          item.name && item.name.toLowerCase().includes(univMajorInput.toLowerCase())
+        );
         setVisibleData(filteredResults.slice(0, dataIncrement));
         setShowResults(true);
       } else {
         setVisibleData(allUniversities.slice(0, dataIncrement));
         setShowResults(false);
       }
-    }, 200); // 입력 후 300ms 지연 후 필터링 수행
+    }, 200); // 200ms 지연
   
-    // 타이머가 다시 설정되기 전에 이전 타이머 정리
+    // 타이머 초기화
     return () => clearTimeout(delayDebounceFn);
   }, [univMajorInput, allUniversities]);
-  // 무한 스크롤 로드
+
   const handleLoadMore = () => {
     if (univMajorInput) {
       const filteredResults = allUniversities.filter(item =>
@@ -67,9 +63,15 @@ const TutorialPage2 = () => {
       Alert.alert('알림', '모든 입력 필드를 채워주세요.');
       return;
     }
-    const [Univ, ...majorArray] = univMajorInput.trim().split(' ');
-    const major = majorArray.join(' ');
-    updateData('userInfo', { Univ, major, year, semester });
+  
+    // `univMajorInput`에서 공백을 기준으로 첫 번째 단어를 대학, 나머지를 전공으로 분리
+    const [univ, ...majorArray] = univMajorInput.trim().split(' ');
+    const major = majorArray.join(' '); // 전공을 배열 형태에서 문자열로 변환
+  
+    // 업데이트할 데이터 객체 생성
+    const univData = { univ, major, year, semester };
+    updateData('univ', univData);
+  
     navigation.navigate('Tutorial3', { name });
   };
 
@@ -106,7 +108,7 @@ const TutorialPage2 = () => {
               <Text style={styles.resultItem}>{item.name}</Text>
             </TouchableOpacity>
           )}
-          onEndReached={handleLoadMore} // 스크롤 끝에 도달 시 추가 데이터 로드
+          onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
         />
       )}

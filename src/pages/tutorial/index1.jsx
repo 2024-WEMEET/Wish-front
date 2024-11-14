@@ -7,25 +7,25 @@ const { width, height } = Dimensions.get('window');
 
 const TutorialPage1 = () => {
   const route = useRoute();
-  const { name = '사용자' } = route.params || {}; // 기본값 설정
+  const { name = '사용자' } = route.params || {}; 
   const [selectedOptions, setSelectedOptions] = useState([]);
   const navigation = useNavigation();
   const { updateData } = useTutorial();
 
-  const handleSelectOption = (option) => {
-    const newOptions = selectedOptions.includes(option)
-      ? selectedOptions.filter((item) => item !== option)
-      : [...selectedOptions, option];
+  const handleSelectOption = (optionValue) => {
+    const newOptions = selectedOptions.includes(optionValue)
+      ? selectedOptions.filter((item) => item !== optionValue)
+      : [...selectedOptions, optionValue];
 
     setSelectedOptions(newOptions);
-    updateData('worries', newOptions);
+    updateData('worries', newOptions); // worries 배열에 숫자 값 추가
   };
 
   const handleNext = () => {
     if (selectedOptions.length === 0) {
       Alert.alert('유효성 검사', '하나 이상의 소원을 선택해 주세요');
     } else {
-      navigation.navigate('Tutorial2', {name});
+      navigation.navigate('Tutorial2', { name });
     }
   };
 
@@ -39,16 +39,16 @@ const TutorialPage1 = () => {
 
       <View style={styles.cardcontainer}>
         <TouchableOpacity
-          style={[styles.card, selectedOptions.includes('전공이 낯설어요.') && styles.selectedCard]}
-          onPress={() => handleSelectOption('전공이 낯설어요.')}
+          style={[styles.card, selectedOptions.includes(1) && styles.selectedCard]}
+          onPress={() => handleSelectOption(1)}
         >
           <Text style={styles.cardtext}>전공이 낯설어요.</Text>
           <Text style={styles.cardsubtext}>전공의 세부 분야, 취업 현황, 필요한 적성 등을 알고 싶어요.</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.card, selectedOptions.includes('스펙이 부족해요.') && styles.selectedCard]}
-          onPress={() => handleSelectOption('스펙이 부족해요.')}
+          style={[styles.card, selectedOptions.includes(2) && styles.selectedCard]}
+          onPress={() => handleSelectOption(2)}
         >
           <Text style={styles.cardtext}>스펙이 부족해요.</Text>
           <Text style={styles.cardsubtext}>어떤 활동을 할지, 어떤 대회를 나갈지,</Text>
@@ -56,8 +56,8 @@ const TutorialPage1 = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.card, selectedOptions.includes('진로에 대한 확신이 없어요.') && styles.selectedCard]}
-          onPress={() => handleSelectOption('진로에 대한 확신이 없어요.')}
+          style={[styles.card, selectedOptions.includes(3) && styles.selectedCard]}
+          onPress={() => handleSelectOption(3)}
         >
           <Text style={styles.cardtext}>진로에 대한 확신이 없어요.</Text>
           <Text style={styles.cardsubtext}>채용 공고, 연구실, 유망 직업 등에 대한</Text>
@@ -119,11 +119,8 @@ const styles = StyleSheet.create({
     color: '#555555',
   },
   nextButton: {
-    // position: 'absolute',
-    // bottom: 40,
-    // right: 24,
     alignSelf: 'flex-end', 
-    width : width * 0.19,
+    width: width * 0.19,
     backgroundColor: '#0066FF',
     paddingHorizontal: 20,
     paddingVertical: 10,

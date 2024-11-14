@@ -9,7 +9,7 @@ const TutorialPage3 = () => {
   const route = useRoute();
   const { name = '사용자' } = route.params || {}; 
   const navigation = useNavigation();
-  const { updateData } = useTutorial();
+  const { updateData, tutorialData , ReadyForBackend } = useTutorial();
 
   const [certInput, setCertInput] = useState('');
   const [progInput, setProgInput] = useState('');
@@ -19,20 +19,62 @@ const TutorialPage3 = () => {
   const [langList, setLangList] = useState([]);
 
   const addItem = (item, type) => {
-    if (type === 'cert') setCertList((prev) => [...prev, item]);
-    else if (type === 'prog') setProgList((prev) => [...prev, item]);
-    else if (type === 'lang') setLangList((prev) => [...prev, item]);
+    if (item.trim()) {
+      if (type === 'cert') {
+        setCertList((prev) => [...prev, item]);
+        updateData('cert', [...certList, item]);
+      } else if (type === 'prog') {
+        setProgList((prev) => [...prev, item]);
+        updateData('prog', [...progList, item]);
+      } else if (type === 'lang') {
+        setLangList((prev) => [...prev, item]);
+        updateData('lang', [...langList, item]);
+      }
+    }
   };
 
-  const handleNext = () => {
-    const data = {
-      certificates: certList,
-      programs: progList,
-      languages: langList,
-    };
+  //---------------------------------------------------------------------------------------------------
+  // const handleNext = async () => {
+  //   // ReadyForBackend 함수로 변환된 데이터에 tutorialCompleted 추가
+  //   const dataFromBackend = ReadyForBackend();
+  //   const dataToSend = {
+  //     ...dataFromBackend, // 변환된 데이터 포함
+  //     tutorialCompleted: true, // tutorialCompleted 필드 추가
+  // };
 
-    updateData('userExperience', data);
-    navigation.navigate('Main', { name });
+  //   try {
+  //       const response = await fetch('https://localhost:8080/member/tutorial', {
+  //           method: 'POST',
+  //           headers: {
+  //               'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify(dataToSend),
+  //       });
+
+  //       if (!response.ok) {
+  //           throw new Error('Failed to send data');
+  //       }
+
+  //       console.log('Data sent successfully:', dataToSend);
+  //       navigation.navigate('Main', { name });  
+  //   } catch (error) {
+  //       console.error('Error sending data:', error);
+  //   }
+  // };
+
+    const handleNext = () => {
+
+      const dataFromBackend = ReadyForBackend();
+      const dataToSend = {
+          ...dataFromBackend, // 변환된 데이터 포함
+          tutorialCompleted: true, // tutorialCompleted 필드 추가
+      };
+
+      // API 호출 대신 데이터 구조를 콘솔에 출력
+      console.log('Data prepared for backend:', dataToSend);
+
+      // 메인 화면으로 이동
+      navigation.navigate('Main', { name });
   };
 
   const renderInputSection = (label, inputValue, setInputValue, dataList, type) => (
@@ -42,13 +84,13 @@ const TutorialPage3 = () => {
         <TextInput
           style={styles.searchInput}
           placeholder={`${label}을 입력해주세요.`}
-          placeholderTextColor={"#969696"}
+          placeholderTextColor="#969696"
           value={inputValue}
           onChangeText={setInputValue}
         />
         <TouchableOpacity 
           onPress={() => { addItem(inputValue, type); setInputValue(''); }}
-          style={styles.addButtonContainer} // 버튼 위치 스타일
+          style={styles.addButtonContainer} 
         >
           <Text style={styles.addButton}>추가</Text>
         </TouchableOpacity>
@@ -105,7 +147,7 @@ const styles = StyleSheet.create({
     marginBottom: width * 0.10,
   },
   inputSection: {
-    marginBottom: height* 0.02,
+    marginBottom: height * 0.02,
   },
   sectionLabel: {
     fontSize: width * 0.045,
@@ -126,7 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: width * 0.045,
     color: '#000000',
-    paddingRight: width * 0.15, // 버튼 공간 확보
+    paddingRight: width * 0.15,
   },
   addButtonContainer: {
     position: 'absolute',
@@ -142,7 +184,7 @@ const styles = StyleSheet.create({
     color: '#0066FF',
   },
   list: {
-    maxHeight: height*0.035,
+    maxHeight: height * 0.15, 
   },
   selectedItem: {
     fontSize: width * 0.04,
@@ -152,7 +194,7 @@ const styles = StyleSheet.create({
   nextButton: {
     marginTop: height * 0.05,
     alignSelf: 'flex-end', 
-    width : width * 0.19,
+    width: width * 0.19,
     backgroundColor: '#0066FF',
     paddingHorizontal: 20,
     paddingVertical: 10,
