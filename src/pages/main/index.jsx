@@ -15,9 +15,9 @@ const MainPage = () => {
       {/* 상단 바 */}
       <LinearGradient
       colors={['#1052B0', '#3D7DD6']} // 그라데이션 색상 배열
-      start={{ x: 0, y: 0 }} // 시작점 (위쪽 왼쪽)
-      end={{ x: 0, y: 1 }}   // 끝점 (아래쪽)
-      style={styles.header} // 스타일 적용
+      start={{ x: 0, y: 0 }} // 시작점 
+      end={{ x: 0, y: 1 }}   // 끝점 
+      style={styles.header} 
       >
         <Text style={styles.headerText}>윤서님의 WISH를 위해 </Text>
         <Text style={styles.headerText}>다양한 해답을 준비했어요!</Text>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FFFFFF',
     textAlign: 'center',
-    fontFamily: 'Inter',
+    fontFamily: 'Inter-Regular',
     paddingHorizontal: width * 0.1,
   },
   cardContainer: {
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     paddingVertical: width * 0.06,
     marginBottom: height * 0.02,
     borderRadius: 5,
-    overflow: 'hidden', // 자식 요소가 부모 영역을 벗어날 경우 잘리도록 설정
+    overflow: 'hidden', // 자식 요소가 부모 영역을 벗어날 경우 자름
   },
   Texts: {
     flexDirection: 'column',
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: '700',
     textAlign: 'center',
-    fontFamily: 'Inter',
+    fontFamily: 'Inter-Regular',
     fontSize: width * 0.05,
     color: '#333',
   },
@@ -149,8 +149,6 @@ const styles = StyleSheet.create({
     borderTopColor: '#DDDDDD',
     paddingTop: height * 0.02,
   },
-
-
 });
 
 export default MainPage;

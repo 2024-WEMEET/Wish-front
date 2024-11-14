@@ -70,7 +70,7 @@ const TutorialPage2 = () => {
   
     // 업데이트할 데이터 객체 생성
     const univData = { univ, major, year, semester };
-    updateData('univ', univData);
+    updateData('univ_info', univData);
   
     navigation.navigate('Tutorial3', { name });
   };
