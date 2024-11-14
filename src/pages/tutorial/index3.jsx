@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Dimensions, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Dimensions, TouchableOpacity, FlatList} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTutorial } from '../../hooks/useTutorial';
 
 const { width, height } = Dimensions.get('window');
+const aspectRatio = height / width;
 
 const TutorialPage3 = () => {
   const route = useRoute();
@@ -33,48 +34,45 @@ const TutorialPage3 = () => {
     }
   };
 
-  //---------------------------------------------------------------------------------------------------
-  // const handleNext = async () => {
-  //   // ReadyForBackend 함수로 변환된 데이터에 tutorialCompleted 추가
-  //   const dataFromBackend = ReadyForBackend();
-  //   const dataToSend = {
-  //     ...dataFromBackend, // 변환된 데이터 포함
-  //     tutorialCompleted: true, // tutorialCompleted 필드 추가
-  // };
+  //   //---------------------------------------------------------------------------------------------------
+//   // const handleNext = async () => {
+//   //   // ReadyForBackend 함수로 변환된 데이터에 tutorialCompleted 추가
+//   //   const dataFromBackend = ReadyForBackend();
+//   //   const dataToSend = {
+//   //     ...dataFromBackend, // 변환된 데이터 포함
+//   //     tutorialCompleted: true, // tutorialCompleted 필드 추가
+//   // };
 
-  //   try {
-  //       const response = await fetch('https://localhost:8080/member/tutorial', {
-  //           method: 'POST',
-  //           headers: {
-  //               'Content-Type': 'application/json',
-  //           },
-  //           body: JSON.stringify(dataToSend),
-  //       });
+//   //   try {
+//   //       const response = await fetch('https://localhost:8080/member/tutorial', {
+//   //           method: 'POST',
+//   //           headers: {
+//   //               'Content-Type': 'application/json',
+//   //           },
+//   //           body: JSON.stringify(dataToSend),
+//   //       });
 
-  //       if (!response.ok) {
-  //           throw new Error('Failed to send data');
-  //       }
+//   //       if (!response.ok) {
+//   //           throw new Error('Failed to send data');
+//   //       }
 
-  //       console.log('Data sent successfully:', dataToSend);
-  //       navigation.navigate('Main', { name });  
-  //   } catch (error) {
-  //       console.error('Error sending data:', error);
-  //   }
-  // };
+//   //       console.log('Data sent successfully:', dataToSend);
+//   //       navigation.navigate('Main', { name });  
+//   //   } catch (error) {
+//   //       console.error('Error sending data:', error);
+//   //   }
+//   // };-------------------------------------------------------------
 
-    const handleNext = () => {
 
-      const dataFromBackend = ReadyForBackend();
-      const dataToSend = {
-          ...dataFromBackend, // 변환된 데이터 포함
-          tutorialCompleted: true, // tutorialCompleted 필드 추가
-      };
+  const handleNext = () => {
+    const dataFromBackend = ReadyForBackend();
+    const dataToSend = {
+        ...dataFromBackend,
+        tutorialCompleted: true,
+    };
 
-      // API 호출 대신 데이터 구조를 콘솔에 출력
-      console.log('Data prepared for backend:', dataToSend);
-
-      // 메인 화면으로 이동
-      navigation.navigate('Main', { name });
+    console.log('Data prepared for backend:', dataToSend);
+    navigation.navigate('Main', { name });
   };
 
   const renderInputSection = (label, inputValue, setInputValue, dataList, type) => (
@@ -100,12 +98,13 @@ const TutorialPage3 = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => <Text style={styles.selectedItem}>{item}</Text>}
         style={styles.list}
+        contentContainerStyle={{ flexGrow: 1 }}
       />
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, aspectRatio < 1.8 ? styles.smallScreenContainer : {}]}>
       <Text style={styles.tutonum}>3/3</Text>
       <Text style={styles.headertext}>{name} 님의</Text>
       <Text style={styles.headertext}>경험과 역량이</Text>
@@ -126,9 +125,12 @@ const TutorialPage3 = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: height * 0.13,
+    paddingTop: height * 0.13, // 기본 paddingTop 값
     paddingHorizontal: width * 0.12,
     backgroundColor: '#FFFFFF',
+  },
+  smallScreenContainer: {
+    paddingTop: height * 0.02, // 화면 비율이 1.8보다 작을 때 적용될 paddingTop 값
   },
   tutonum: {
     fontSize: width * 0.041,
@@ -184,7 +186,7 @@ const styles = StyleSheet.create({
     color: '#0066FF',
   },
   list: {
-    maxHeight: height * 0.15, 
+    maxHeight: height * 0.04, 
   },
   selectedItem: {
     fontSize: width * 0.04,

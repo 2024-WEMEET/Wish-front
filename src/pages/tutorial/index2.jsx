@@ -18,7 +18,7 @@ const TutorialPage2 = () => {
   const [year, setYear] = useState('');
   const [semester, setSemester] = useState('');
   const [showResults, setShowResults] = useState(false);
-  
+
   const dispatch = useDispatch();
   const allUniversities = useSelector(state => state.universityData.universities); // 전체 데이터
   const [visibleData, setVisibleData] = useState([]); // 보여줄 데이터
@@ -40,7 +40,6 @@ const TutorialPage2 = () => {
       }
     }, 200); // 200ms 지연
   
-    // 타이머 초기화
     return () => clearTimeout(delayDebounceFn);
   }, [univMajorInput, allUniversities]);
 
@@ -56,6 +55,11 @@ const TutorialPage2 = () => {
       setVisibleData([...visibleData, ...nextData]);
     }
     setDataIndex(dataIndex + dataIncrement);
+  };
+
+  const handleItemSelection = (selectedItem) => {
+    setUnivMajorInput(selectedItem); // Set selected item immediately
+    setShowResults(false);           // Hide the search results
   };
 
   const handleNext = () => {
@@ -94,17 +98,13 @@ const TutorialPage2 = () => {
         <Image source={vectorIcon} style={styles.vectorIcon} />
       </View>
 
-      {/* 검색 결과를 FlatList로 렌더링 */}
       {showResults && (
         <FlatList
           data={visibleData}
           keyExtractor={(item, index) => index.toString()}
           style={styles.resultList}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => {
-              setUnivMajorInput(item.name);
-              setShowResults(false);
-            }}>
+            <TouchableOpacity onPress={() => handleItemSelection(item.name)}>
               <Text style={styles.resultItem}>{item.name}</Text>
             </TouchableOpacity>
           )}
