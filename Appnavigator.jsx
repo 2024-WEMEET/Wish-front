@@ -8,6 +8,7 @@ import LoginPage from './src/pages/login/index';
 import LoadingPage from './src/pages/loading/index';
 import TutorialPage1 from './src/pages/tutorial/index1';
 import TutorialPage2 from './src/pages/tutorial/index2';
+import TutorialPage3 from './src/pages/tutorial/index3';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +22,7 @@ const linking = {
       Loading: 'loading',
       Tutorial1: 'tutorial1',
       Tutorial2: 'tutorial2',
+      Tutorial3: 'tutorial3',
     },
   },
 };
@@ -34,6 +36,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Loading" component={LoadingPage} />
         <Stack.Screen name="Tutorial1" component={TutorialPage1} />
         <Stack.Screen name="Tutorial2" component={TutorialPage2} />
+        <Stack.Screen name="Tutorial3" component={TutorialPage3} />
       </Stack.Navigator>
     </NavigationContainer>
   );

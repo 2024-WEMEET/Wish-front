@@ -75,7 +75,7 @@ const TutorialPage1 = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingTop: height * 0.13,
+    paddingTop: height * 0.05,
     paddingHorizontal: width * 0.12,
     backgroundColor: '#FFFFFF',
   },
@@ -88,12 +88,12 @@ const styles = StyleSheet.create({
     fontSize: width * 0.0615,
     fontWeight: 'bold',
     color: '#000000',
-    marginBottom: 4,
+    marginBottom: 0,
   },
   headersubtext: {
     fontSize: width * 0.0358,
     color: '#AAAAAA',
-    marginBottom: width * 0.16,
+    marginBottom: width * 0.10,
   },
   cardcontainer: {
     flex: 1,
@@ -119,15 +119,18 @@ const styles = StyleSheet.create({
     color: '#555555',
   },
   nextButton: {
-    position: 'absolute',
-    bottom: 40,
-    right: 24,
+    // position: 'absolute',
+    // bottom: 40,
+    // right: 24,
+    alignSelf: 'flex-end', 
+    width : width * 0.19,
     backgroundColor: '#0066FF',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
   },
   nextButtonText: {
+    textAlign: 'center',
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
