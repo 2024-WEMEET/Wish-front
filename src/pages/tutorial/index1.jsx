@@ -27,7 +27,7 @@ const TutorialPage1 = () => {
     } else {
       navigation.navigate('Tutorial2', { name });
     }
-  };
+  };  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

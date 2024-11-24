@@ -1,81 +1,52 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Dimensions, TouchableOpacity, FlatList} from 'react-native';
+import { View, Text, StyleSheet, TextInput, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTutorial } from '../../hooks/useTutorial';
 
 const { width, height } = Dimensions.get('window');
-const aspectRatio = height / width;
 
 const TutorialPage3 = () => {
   const route = useRoute();
-  const { name = '사용자' } = route.params || {}; 
+  const { name = '사용자' } = route.params || {};
   const navigation = useNavigation();
-  const { updateData, tutorialData , ReadyForBackend } = useTutorial();
+  const { updateData, ReadyForBackend } = useTutorial();
 
-  const [certInput, setCertInput] = useState('');
-  const [progInput, setProgInput] = useState('');
-  const [langInput, setLangInput] = useState('');
-  const [certList, setCertList] = useState([]);
-  const [progList, setProgList] = useState([]);
-  const [langList, setLangList] = useState([]);
+  const [inputs, setInputs] = useState({ cert: '', prog: '', lang: '' });
+  const [lists, setLists] = useState({ cert: [], prog: [], lang: [] });
 
-  const addItem = (item, type) => {
-    if (item.trim()) {
-      if (type === 'cert') {
-        setCertList((prev) => [...prev, item]);
-        updateData('cert', [...certList, item]);
-      } else if (type === 'prog') {
-        setProgList((prev) => [...prev, item]);
-        updateData('prog', [...progList, item]);
-      } else if (type === 'lang') {
-        setLangList((prev) => [...prev, item]);
-        updateData('lang', [...langList, item]);
-      }
+  const handleInputChange = (type, value) => {
+    setInputs((prev) => ({ ...prev, [type]: value }));
+  };
+
+  const addItem = (type) => {
+    const value = inputs[type].trim();
+    if (value) {
+      setLists((prev) => ({ ...prev, [type]: [...prev[type], value] }));
+      updateData(type, [...lists[type], value]);
+      setInputs((prev) => ({ ...prev, [type]: '' }));
     }
   };
 
-  //   //---------------------------------------------------------------------------------------------------
-//   // const handleNext = async () => {
-//   //   // ReadyForBackend 함수로 변환된 데이터에 tutorialCompleted 추가
-//   //   const dataFromBackend = ReadyForBackend();
-//   //   const dataToSend = {
-//   //     ...dataFromBackend, // 변환된 데이터 포함
-//   //     tutorialCompleted: true, // tutorialCompleted 필드 추가
-//   // };
-
-//   //   try {
-//   //       const response = await fetch('https://localhost:8080/member/tutorial', {
-//   //           method: 'POST',
-//   //           headers: {
-//   //               'Content-Type': 'application/json',
-//   //           },
-//   //           body: JSON.stringify(dataToSend),
-//   //       });
-
-//   //       if (!response.ok) {
-//   //           throw new Error('Failed to send data');
-//   //       }
-
-//   //       console.log('Data sent successfully:', dataToSend);
-//   //       navigation.navigate('Main', { name });  
-//   //   } catch (error) {
-//   //       console.error('Error sending data:', error);
-//   //   }
-//   // };-------------------------------------------------------------
-
-
-  const handleNext = () => {
+  const handleNext = async () => {
     const dataFromBackend = ReadyForBackend();
-    const dataToSend = {
-        ...dataFromBackend,
-        tutorialCompleted: true,
-    };
+    const dataToSend = { ...dataFromBackend, tutorialCompleted: true };
 
-    console.log('Data prepared for backend:', dataToSend);
-    navigation.navigate('Main', { name });
+    try {
+      const response = await fetch('http://localhost:8080/member/tutorial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend),
+        credentials: 'include', 
+      });
+
+      if (!response.ok) throw new Error('Failed to send data');
+      navigation.navigate('Main', { name });
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
   };
 
-  const renderInputSection = (label, inputValue, setInputValue, dataList, type) => (
+  const renderInputSection = (label, type) => (
     <View style={styles.inputSection}>
       <Text style={styles.sectionLabel}>{label}</Text>
       <View style={styles.inputWrapper}>
@@ -83,54 +54,52 @@ const TutorialPage3 = () => {
           style={styles.searchInput}
           placeholder={`${label}을 입력해주세요.`}
           placeholderTextColor="#969696"
-          value={inputValue}
-          onChangeText={setInputValue}
+          value={inputs[type]}
+          onChangeText={(text) => handleInputChange(type, text)}
         />
-        <TouchableOpacity 
-          onPress={() => { addItem(inputValue, type); setInputValue(''); }}
-          style={styles.addButtonContainer} 
-        >
+        <TouchableOpacity onPress={() => addItem(type)} style={styles.addButtonContainer}>
           <Text style={styles.addButton}>추가</Text>
         </TouchableOpacity>
       </View>
-      <FlatList
-        data={dataList}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.selectedItem}>{item}</Text>}
-        style={styles.list}
-        contentContainerStyle={{ flexGrow: 1 }}
-      />
+      {/* Display the added items here */}
+      {lists[type].map((item, index) => (
+        <Text key={index} style={styles.selectedItem}>
+          {item}
+        </Text>
+      ))}
     </View>
   );
 
   return (
-    <View style={[styles.container, aspectRatio < 1.8 ? styles.smallScreenContainer : {}]}>
-      <Text style={styles.tutonum}>3/3</Text>
-      <Text style={styles.headertext}>{name} 님의</Text>
-      <Text style={styles.headertext}>경험과 역량이</Text>
-      <Text style={styles.headertext}>궁금해요!</Text>
-      <Text style={styles.headersubtext}>WISH가 당신을 위한 정보를 찾고 있어요 :)</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <Text style={styles.tutonum}>3/3</Text>
+        <Text style={styles.headertext}>{name} 님의</Text>
+        <Text style={styles.headertext}>경험과 역량이</Text>
+        <Text style={styles.headertext}>궁금해요!</Text>
+        <Text style={styles.headersubtext}>WISH가 당신을 위한 정보를 찾고 있어요 :)</Text>
 
-      {renderInputSection('자격증', certInput, setCertInput, certList, 'cert')}
-      {renderInputSection('프로그램', progInput, setProgInput, progList, 'prog')}
-      {renderInputSection('어학 성적', langInput, setLangInput, langList, 'lang')}
+        {renderInputSection('자격증', 'cert')}
+        {renderInputSection('프로그램', 'prog')}
+        {renderInputSection('어학 성적', 'lang')}
 
-      <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-        <Text style={styles.nextButtonText}>다음</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+          <Text style={styles.nextButtonText}>다음</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: height * 0.13, // 기본 paddingTop 값
-    paddingHorizontal: width * 0.12,
+  scrollContainer: {
+    flexGrow: 1,
     backgroundColor: '#FFFFFF',
   },
-  smallScreenContainer: {
-    paddingTop: height * 0.02, // 화면 비율이 1.8보다 작을 때 적용될 paddingTop 값
+  container: {
+    flex: 1,
+    paddingTop: height * 0.13,
+    paddingHorizontal: width * 0.12,
   },
   tutonum: {
     fontSize: width * 0.041,
@@ -170,23 +139,16 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: width * 0.045,
     color: '#000000',
-    paddingRight: width * 0.15,
   },
   addButtonContainer: {
-    position: 'absolute',
-    right: 10,
-    top: 10,
     backgroundColor: '#E0E0E0',
     paddingHorizontal: 10,
-    paddingBottom: 1,
+    paddingVertical: 1,
     borderRadius: 4,
   },
   addButton: {
     fontSize: width * 0.04,
     color: '#0066FF',
-  },
-  list: {
-    maxHeight: height * 0.04, 
   },
   selectedItem: {
     fontSize: width * 0.04,
@@ -195,7 +157,7 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     marginTop: height * 0.05,
-    alignSelf: 'flex-end', 
+    alignSelf: 'flex-end',
     width: width * 0.19,
     backgroundColor: '#0066FF',
     paddingHorizontal: 20,

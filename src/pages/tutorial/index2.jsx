@@ -72,9 +72,11 @@ const TutorialPage2 = () => {
     const [univ, ...majorArray] = univMajorInput.trim().split(' ');
     const major = majorArray.join(' '); // 전공을 배열 형태에서 문자열로 변환
   
-    // 업데이트할 데이터 객체 생성
-    const univData = { univ, major, year, semester };
-    updateData('univ_info', univData);
+    // 각 데이터를 개별적으로 updateData로 저장
+    updateData('univ', univ);
+    updateData('major', major);
+    updateData('year', parseInt(year, 10));
+    updateData('semester', parseInt(semester, 10));
   
     navigation.navigate('Tutorial3', { name });
   };
