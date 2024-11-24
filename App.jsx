@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import AppNavigator from './Appnavigator';
 import store from './src/redux/store'; // Redux store 가져오기 src/redux/store
 import { TutorialProvider } from './src/hooks/useTutorial';
+import { UserProvider } from './src/hooks/useUser';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -40,9 +41,11 @@ export default function App() {
   // Redux Provider와 TutorialProvider를 감싸도록 설정
   return (
     <Provider store={store}>
-      <TutorialProvider>
-        <AppNavigator />
-      </TutorialProvider>
+      <UserProvider>
+        <TutorialProvider>
+          <AppNavigator />
+        </TutorialProvider>
+      </UserProvider>
     </Provider>
   );
 }
