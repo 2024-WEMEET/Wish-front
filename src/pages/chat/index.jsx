@@ -164,7 +164,7 @@ const ChatPage = () => {
 
         <TouchableOpacity
           style={[styles.navButton, styles.rightButton]}
-          onPress={() => navigation.navigate('Myinfo')}
+          onPress={() => navigation.navigate('MyInfo')}
         >
           <Image source={require('../../../assets/Group 19.png')} style={styles.myinfo} />
         </TouchableOpacity>

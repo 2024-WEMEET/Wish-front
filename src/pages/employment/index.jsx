@@ -102,7 +102,7 @@ const Employment = () => {
           <Text style={styles.navText}>홈</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Myinfo')}>
+        <TouchableOpacity onPress={() => navigation.navigate('MyInfo')}>
           <Image source={require('../../../assets/Group 19.png')} style={styles.navIcon} />
         </TouchableOpacity>
       </View>
